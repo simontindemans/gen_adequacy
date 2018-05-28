@@ -1,2 +1,2 @@
 # gen_adequacy
-Basic tools for single node generation adequacy analysis
+A set of basic tools for single node generation adequacy analysis
