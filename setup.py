@@ -10,7 +10,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='gen_adequacy',
-    version='0.1.1',
+    version='0.2.0',
     packages=['gen_adequacy'],
     url='https://github.com/simontindemans/gen_adequacy',
     author='Simon Tindemans',
