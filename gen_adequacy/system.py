@@ -13,10 +13,11 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import math
 import numpy as np
 #from numba import jit
-import numpy.random as random
+#import numpy.random as random
 
 import gen_adequacy.randomvar as rv
 from gen_adequacy.generator import Generator
+import gen_adequacy.util as util
 
 
 # TODO: fix smoothing in epns()
@@ -189,10 +190,7 @@ class SingleNodeSystem(object):
         trace = np.zeros(generate_steps)
 
         # IMPORTANT: make sure we pass a Generator, not a seed, as that would cause duplication
-        if isinstance(rng, random.Generator) or isinstance(rng, random.RandomState):
-            use_rng=rng
-        else:
-            use_rng=random.default_rng(rng)
+        use_rng = util._rng_interpreter(rng)
         for gen in self.gen_list:
             trace += gen.power_trace(num_steps=generate_steps, dt=dt, rng=use_rng)
 

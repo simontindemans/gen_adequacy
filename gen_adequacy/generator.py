@@ -12,10 +12,10 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import math
 import numpy as np
 #from numba import jit
-import numpy.random as random
+#import numpy.random as random
 
 import gen_adequacy.randomvar as rv
-
+import gen_adequacy.util as util
 
 class Generator(object):
     """Class that represents a single generator or set of identical generators as a linear Markov chain
@@ -48,7 +48,8 @@ class Generator(object):
 
         :return: sum of capacities of available units.
         """
-        use_rng = random.default_rng(rng)
+        use_rng = util._rng_interpreter(rng)
+
         up_count = use_rng.binomial(self.unit_count, self.unit_availability)
         return up_count * self.unit_capacity
 
@@ -63,7 +64,8 @@ class Generator(object):
         :return: numpy array of length num_steps and dtype float
         """
 
-        use_rng = random.default_rng(rng)
+        use_rng = util._rng_interpreter(rng)
+
         initial_up_count = use_rng.binomial(self.unit_count, self.unit_availability)
 
         repair_prob = self.unit_repair_rate * dt

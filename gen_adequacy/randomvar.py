@@ -11,8 +11,9 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 import math
 import numpy as np
-import numpy.random as random
+#import numpy.random as random
 
+import gen_adequacy.util as util
 
 class RandomVariable(object):
     """Represents a random variable, defined by a probability mass function on a regular array."""
@@ -195,7 +196,7 @@ class RandomVariable(object):
         :return: numpy.ndarray() of random values
         """
 
-        use_rng=random.default_rng(rng)
+        use_rng=util._rng_interpreter(rng)
 
         res = self.step
 
