@@ -204,8 +204,8 @@ class RandomVariable(object):
                 return random_state.choice(self.x_array(), size=number_of_items, p=self.probability_array)
         else:
             if dither:
-                return np.random.choice(self.x_array(), size=number_of_items, p=self.probability_array)
-                + np.random.triangular(-res, 0, res, size=number_of_items)
+                return np.random.choice(self.x_array(), size=number_of_items, p=self.probability_array) \
+                    + np.random.triangular(-res, 0, res, size=number_of_items)
             if not dither:
                 return np.random.choice(self.x_array(), size=number_of_items, p=self.probability_array)
 

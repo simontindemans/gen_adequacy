@@ -11,7 +11,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 import math
 import numpy as np
-from numba import jit
+#from numba import jit
 import random
 
 import gen_adequacy.randomvar as rv
@@ -52,8 +52,8 @@ class Generator(object):
         """
         return self.up_count * self.unit_capacity
 
-    @jit
-    def power_trace(self, num_steps=1, dt=1, random_start=True):
+#    @jit
+    def power_trace(self, num_steps=1, dt=1.0, random_start=True):
         """
         Return time series of available capacities of the aggregate units.
 
