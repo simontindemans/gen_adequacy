@@ -48,8 +48,8 @@ class Generator(object):
 
         :return: sum of capacities of available units.
         """
-        rng = random.default_rng(rng)
-        up_count = rng.binomial(unit_count, unit_availability)
+        use_rng = random.default_rng(rng)
+        up_count = use_rng.binomial(self.unit_count, self.unit_availability)
         return up_count * self.unit_capacity
 
 #    @jit
