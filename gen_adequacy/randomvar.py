@@ -11,7 +11,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 import math
 import numpy as np
-#import numpy.random as random
 
 import gen_adequacy.util as util
 

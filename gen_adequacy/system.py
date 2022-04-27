@@ -12,8 +12,6 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 import math
 import numpy as np
-#from numba import jit
-#import numpy.random as random
 
 import gen_adequacy.randomvar as rv
 from gen_adequacy.generator import Generator
@@ -168,7 +166,6 @@ class SingleNodeSystem(object):
         mrv = self.margin_rv
         return mrv.random_value(number_of_items=number_of_values)
 
-#    @jit
     def generation_trace(self, num_steps=0, dt=1.0, rng=None):
         """
         Sample a random generation trace for all generators in the system.
