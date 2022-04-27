@@ -13,6 +13,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import math
 import numpy as np
 #from numba import jit
+import numpy.random as random
 
 import gen_adequacy.randomvar as rv
 from gen_adequacy.generator import Generator
@@ -167,7 +168,7 @@ class SingleNodeSystem(object):
         return mrv.random_value(number_of_items=number_of_values)
 
 #    @jit
-    def generation_trace(self, num_steps=0, dt=1.0, random_start=True):
+    def generation_trace(self, num_steps=0, dt=1.0, rng=None):
         """
         Sample a random generation trace for all generators in the system.
 
@@ -186,8 +187,14 @@ class SingleNodeSystem(object):
             generate_steps = num_steps
 
         trace = np.zeros(generate_steps)
+
+        # IMPORTANT: make sure we pass a Generator, not a seed, as that would cause duplication
+        if isinstance(rng, random.Generator) or isinstance(rng, random.RandomState):
+            use_rng=rng
+        else:
+            use_rng=random.default_rng(rng)
         for gen in self.gen_list:
-            trace += gen.power_trace(num_steps=generate_steps, dt=dt, random_start=random_start)
+            trace += gen.power_trace(num_steps=generate_steps, dt=dt, rng=use_rng)
 
         return trace
 

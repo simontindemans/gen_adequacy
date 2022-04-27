@@ -11,6 +11,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 import math
 import numpy as np
+import numpy.random as random
 
 
 class RandomVariable(object):
@@ -184,49 +185,43 @@ class RandomVariable(object):
             raise NotImplementedError("Can only multiply RandomVariable objects by integer values.")
         return self
 
-    def random_value(self, number_of_items=1, random_state=None, dither=True):
+    def random_value(self, number_of_items=1, dither=True, rng=None):
         """
         Generate random values according to the object's distribution
 
         :param number_of_items: number of random values to return
-        :param random_state: optional numpy RandomState() object to use for the random stream
         :param dither: optional dithering to generate a piecewise-linear PDF (default: True)
+        :param rng: optional numpy random number generator or seed
         :return: numpy.ndarray() of random values
         """
 
+        use_rng=random.default_rng(rng)
+
         res = self.step
 
-        if random_state:
-            if dither:
-                return random_state.choice(self.x_array(), size=number_of_items, p=self.probability_array) \
-                       + random_state.triangular(-res, 0, res, size=number_of_items)
-            if not dither:
-                return random_state.choice(self.x_array(), size=number_of_items, p=self.probability_array)
+        values = use_rng.choice(self.x_array(), size=number_of_items, p=self.probability_array)
+        if dither:
+            return values + use_rng.triangular(-res, 0, res, size=number_of_items)
         else:
-            if dither:
-                return np.random.choice(self.x_array(), size=number_of_items, p=self.probability_array) \
-                    + np.random.triangular(-res, 0, res, size=number_of_items)
-            if not dither:
-                return np.random.choice(self.x_array(), size=number_of_items, p=self.probability_array)
+            return values
 
 
-    def random_value_from_pool(self, pool_size, random_state=None, dither=True, reset=False):
+    def random_value_from_pool(self, pool_size, dither=True, reset=False, rng=None):
         """
         Efficient sampler implementation that returns a single value from a pool each time it is called
 
         :param pool_size: pool size to use when new samples are required
-        :param random_state: optional numpy RandomState object to use for number generation
         :param dither: optional dithering to generate a piecewise-linear PDF (default: True)
         :param reset: force repopulation of the pool (default: False)
+        :param rng: optional numpy random number generator or seed
         :return: random value
 
         NOTE: the implementation is unsafe, in the sense that a manual reset is required to update the pool values
         each time the system parameters change.
         """
-        if reset or (self.value_pool_left <= 0) or random_state != self.value_pool_random_state:
-            self.value_pool = self.random_value(number_of_items=pool_size, random_state=random_state, dither=dither)
+        if reset or (self.value_pool_left <= 0):
+            self.value_pool = self.random_value(number_of_items=pool_size, dither=dither, rng=rng)
             self.value_pool_left = pool_size
-            self.value_pool_random_state = random_state
 
         self.value_pool_left = self.value_pool_left - 1
         return self.value_pool[self.value_pool_left]

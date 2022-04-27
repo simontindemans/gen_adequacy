@@ -10,7 +10,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setup(
     name='gen_adequacy',
-    version='0.4.0',
+    version='1.0.0a',
     packages=['gen_adequacy'],
     url='https://github.com/simontindemans/gen_adequacy',
     author='Simon Tindemans',
@@ -26,6 +26,6 @@ setup(
         'Programming Language :: Python :: 3',
         'Topic :: Scientific/Engineering',
     ],
-    install_requires=['numpy', 'numba'],
+    install_requires=['numpy'],
     python_requires='>=3.5',
 )

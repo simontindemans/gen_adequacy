@@ -12,7 +12,7 @@ file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import math
 import numpy as np
 #from numba import jit
-import random
+import numpy.random as random
 
 import gen_adequacy.randomvar as rv
 
@@ -40,20 +40,20 @@ class Generator(object):
         self.unit_availability = unit_availability
         self.unit_MTBF = unit_mtbf
 
-        # Compute the number of units in the 'up' state. This is used for sequential series generation.
-        self.up_count = np.random.binomial(unit_count, unit_availability)
         self.unit_fail_rate = 1/(unit_availability * unit_mtbf)
         self.unit_repair_rate = 1/((1 - unit_availability) * unit_mtbf)
 
-    def available_capacity(self):
+    def random_available_capacity(self, rng=None):
         """Return sum of capacities of available units.
 
         :return: sum of capacities of available units.
         """
-        return self.up_count * self.unit_capacity
+        rng = random.default_rng(rng)
+        up_count = rng.binomial(unit_count, unit_availability)
+        return up_count * self.unit_capacity
 
 #    @jit
-    def power_trace(self, num_steps=1, dt=1.0, random_start=True):
+    def power_trace(self, num_steps=1, dt=1.0, rng=None):
         """
         Return time series of available capacities of the aggregate units.
 
@@ -63,8 +63,8 @@ class Generator(object):
         :return: numpy array of length num_steps and dtype float
         """
 
-        initial_up_count = \
-            np.random.binomial(self.unit_count, self.unit_availability) if random_start else self.up_count
+        use_rng = random.default_rng(rng)
+        initial_up_count = use_rng.binomial(self.unit_count, self.unit_availability)
 
         repair_prob = self.unit_repair_rate * dt
         fail_prob = self.unit_fail_rate * dt
@@ -88,7 +88,7 @@ class Generator(object):
                 change_factor = repair_factor
             t = 0
             while True:
-                t += math.ceil(change_factor * math.log(1.0 - random.random()))
+                t += math.ceil(change_factor * math.log(1.0 - use_rng.random()))
                 if t > num_steps:
                     break
                 adjust_trace[t] -= state
